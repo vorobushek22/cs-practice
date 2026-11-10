@@ -20,7 +20,7 @@ def parse_record(line: str) -> dict:
     if not math.isfinite(temp):
         raise ValueError(f"температура не число: {temp_text!r}")
 
-    return {"city": city, "temp": temp, "date": date}
+    return {"city": city, "temperature": temp, "date": date}
 
 
 def read_valid(lines: list[str]) -> list[dict]:
@@ -42,7 +42,7 @@ def average_by_city(records: list[dict]) -> dict:
     count = {}
     for record in records:
         city = record["city"]
-        total[city] = total.get(city, 0) + record["temp"]
+        total[city] = total.get(city, 0) + record["temperature"]
         count[city] = count.get(city, 0) + 1
     return {city: round(total[city] / count[city], 1) for city in total}
 
