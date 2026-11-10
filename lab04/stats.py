@@ -14,7 +14,7 @@ def parse_record(line: str) -> dict:
         raise ValueError(f"пустая дата: {line!r}")
 
     try:
-        temp = float(temp_text)
+        temp = float(temp_text.replace(",", "."))
     except ValueError:
         raise ValueError(f"температура не число: {temp_text!r}") from None
     if not math.isfinite(temp):
