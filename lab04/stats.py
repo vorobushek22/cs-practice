@@ -24,19 +24,32 @@ def parse_record(line: str) -> dict:
 
 
 def read_valid(lines: list[str]) -> list[dict]:
-    return [parse_record(line) for line in lines]
+    """Разбирает строки журнала, пропуская пустые и негодные."""
+    records = []
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            records.append(parse_record(line))
+        except ValueError:
+            continue
+    return records
 
 
 def average_by_city(records: list[dict]) -> dict:
+    """Средняя температура по каждому городу, округлённая до десятых."""
     total = {}
     count = {}
     for record in records:
         city = record["city"]
         total[city] = total.get(city, 0) + record["temp"]
         count[city] = count.get(city, 0) + 1
-    return {city: total[city] / count[city] for city in total}
+    return {city: round(total[city] / count[city], 1) for city in total}
 
 
 def warmest_city(records: list[dict]) -> str:
+    """Город с наибольшей средней температурой (при равенстве — первый по алфавиту)."""
     averages = average_by_city(records)
-    return max(averages, key=averages.get)
+    if not averages:
+        raise ValueError("нет записей")
+    return min(averages, key=lambda city: (-averages[city], city))
