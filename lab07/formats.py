@@ -53,3 +53,14 @@ def parse_settings(lines: list[str]) -> dict:
             current_list = None
  
     return result
+
+def merge_by_key(rows: list[dict], extra: dict, key: str = "id") -> list[dict]:
+    """Дополняет записи сведениями из справочника. Поля записи важнее."""
+    merged = []
+    for row in rows:
+        value = row.get(key)
+        info = extra.get(value)
+        if info is None and value is not None:
+            info = extra.get(str(value))  # ключи в JSON всегда строки
+        merged.append({**(info or {}), **row})
+    return merged
