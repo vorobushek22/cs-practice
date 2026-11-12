@@ -1,4 +1,5 @@
 import re
+import json
 
 def csv_to_records(text: str) -> list[dict]:
     """CSV с заголовком -> список словарей. Значения остаются строками."""
@@ -64,3 +65,7 @@ def merge_by_key(rows: list[dict], extra: dict, key: str = "id") -> list[dict]:
             info = extra.get(str(value))  # ключи в JSON всегда строки
         merged.append({**(info or {}), **row})
     return merged
+
+def records_to_json(records: list[dict]) -> str:
+    """Список словарей -> JSON: отступ 2, ключи по алфавиту, кириллица как есть."""
+    return json.dumps(records, ensure_ascii=False, indent=2, sort_keys=True)
