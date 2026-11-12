@@ -6,10 +6,10 @@ def csv_to_records(text: str) -> list[dict]:
     lines = [line for line in text.splitlines() if line.strip()]
     if not lines:
         return []
-    header = lines[0].split(",")
+    header = [name.strip() for name in lines[0].split(",")]
     records = []
     for line in lines[1:]:
-        values = line.split(",")
+        values = [value.strip() for value in line.split(",")]
         # если в строке меньше значений, чем в заголовке, добиваем пустыми
         values += [""] * (len(header) - len(values))
         records.append(dict(zip(header, values)))
