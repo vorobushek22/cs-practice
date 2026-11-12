@@ -12,3 +12,34 @@ def parse_event(line: str) -> dict:
         raise ValueError(f"неизвестный уровень {level!r}: {line!r}")
 
     return {"time": time, "level": level, "message": message}
+
+def count_levels(lines) -> dict:
+    """Сколько строк каждого уровня; испорченные считаются под ключом BROKEN."""
+    counts = {}
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            key = parse_event(line)["level"]
+        except ValueError:
+            key = "BROKEN"
+        counts[key] = counts.get(key, 0) + 1
+    return counts
+
+
+def top_errors(lines, n: int) -> list[list]:
+    """n самых частых сообщений уровня ERROR: пары [сообщение, сколько раз]."""
+    counts = {}
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            event = parse_event(line)
+        except ValueError:
+            continue
+        if event["level"] == "ERROR":
+            message = event["message"]
+            counts[message] = counts.get(message, 0) + 1
+
+    ordered = sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))
+    return [[message, count] for message, count in ordered[:n]]
